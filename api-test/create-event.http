@@ -1,5 +1,6 @@
 POST http://localhost:8080/events
 content-type: application/json
+authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhaGFsQGdtYWlsLmNvbSIsImV4cCI6MTczMDA0OTA2OSwidXNlcklkIjowfQ.qegKV48wMMRN9u8Xy6yBiI5Z4aRJj17sSk6p_Y97t2Y 
 
 {
     "name":"Test Event",
