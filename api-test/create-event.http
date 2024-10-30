@@ -3,8 +3,8 @@ content-type: application/json
 authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhaGFsamVzQGdtYWlsLmNvbSIsImV4cCI6MTczMDI4MjgyMywidXNlcklkIjoyfQ.Egjf2Nxozq1TjXKYUtipZ3tpVFiqU4briVuT9-NbQcw
 
 {
-    "name":"new Event2-1",
-    "description":"A new Event2-1",
-    "location":"A new location2-1",
+    "name":"new Event2-2",
+    "description":"A new Event2-2",
+    "location":"A new location2-2",
     "dateTime":"2025-01-01T15:30:00.000Z"
 }
