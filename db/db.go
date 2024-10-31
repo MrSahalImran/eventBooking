@@ -57,13 +57,13 @@ func createTables() {
 	event_id INTEGER,
 	user_id INTEGER,
 	FOREIGN KEY(event_id) REFERENCES events(id),
-	FOREIGN KEY(user_id) REFERENCES users(id),
+	FOREIGN KEY(user_id) REFERENCES users(id)
 	)
 	`
 
 	_, err = DB.Exec(createRegistrationTable)
 
 	if err != nil {
-		panic("could not create event table")
+		panic("could not create registration table")
 	}
 }
