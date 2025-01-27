@@ -1,6 +1,6 @@
 # PRD of Event Management API
 ## Objective
-To develop robust solution for creating,, and participating in events using the Gin framework GoLang. The solution provides features as CRUD operations for events, user authentication and event registration, all secured via JWT-based authentication. Only authorized users can sensitive actions, with access controls ensuring data integrity. Designed for flexibility, it emphasizes usability, scalability, and security, making it ideal for event-driven platforms.
+To develop robust solution for creating and participating in events using the Gin framework GoLang. The solution provides features as CRUD operations for events, user authentication and event registration, all secured via JWT-based authentication. Only authorized users can sensitive actions, with access controls ensuring data integrity. Designed for flexibility, it emphasizes usability, scalability, and security, making it ideal for event-driven platforms.
 
 ## Scope
 
