@@ -3,8 +3,10 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/joho/godotenv"
 )
 
 var DB *sql.DB
@@ -12,7 +14,14 @@ var DB *sql.DB
 func InitDB() {
 	var err error
 
-	dsn := "postgres://postgres:password@localhost:5432/eventdb?sslmode=disable"
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: .env file not found, using environment variables")
+	}
+
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		log.Fatal("DATABASE_URL environment variable is not set")
+	}
 
 	DB, err = sql.Open("pgx", dsn)
 	if err != nil {
