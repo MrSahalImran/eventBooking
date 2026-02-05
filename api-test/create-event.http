@@ -1,10 +1,10 @@
 POST http://localhost:8080/events
 content-type: application/json
-authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhaGFsamVzQGdtYWlsLmNvbSIsImV4cCI6MTczMDQwMjA4MiwidXNlcklkIjoxfQ.pFNyakgByUzRW-IgaU7PqBKHIW2u5CcEU1x4_0NH_cM
+authorization:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhaGFsQGdtYWlsLmNvbSIsImV4cCI6MTc3MDIzNDE1NiwidXNlcklkIjoyfQ.m5BF_R-f9pIBXEIaXKkixx8N2UrP0CZscUJVl8nYw0o
 
 {
-    "name":"new Event by jes 1",
+    "name":"new Event console",
     "description":"A new Event",
-    "location":"A new location",
+    "location":"Jammu",
     "dateTime":"2025-01-01T15:30:00.000Z"
 }

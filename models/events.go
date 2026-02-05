@@ -17,7 +17,7 @@ type Event struct {
 
 func (e *Event) Save() error {
 	query := `
-	INSERT INTO events(name,description,location,dateTime,user_id) VALUES (?,?,?,?,?)
+	INSERT INTO events(name,description,location,date_time,user_id) VALUES ($1,$2,$3,$4,$5) RETURNING id
 	`
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
@@ -25,14 +25,7 @@ func (e *Event) Save() error {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserID)
-
-	if err != nil {
-		return err
-	}
-
-	id, err := result.LastInsertId()
-	e.ID = id
+	err = stmt.QueryRow(e.Name, e.Description, e.Location, e.DateTime, e.UserID).Scan(&e.ID)
 
 	return err
 
@@ -64,7 +57,7 @@ func GetAllEvents() ([]Event, error) {
 
 func GetEvent(id int64) (*Event, error) {
 	query := `
-	SELECT * FROM events WHERE ID=?
+	SELECT * FROM events WHERE ID=$1
 	`
 	row := db.DB.QueryRow(query, id)
 
@@ -79,8 +72,8 @@ func GetEvent(id int64) (*Event, error) {
 func (event *Event) Update() error {
 	query := `
 	UPDATE events
-	SET name=?, description=?, location=?, dateTime=?
-	WHERE id=?
+	SET name=$1, description=$2, location=$3, date_time=$4
+	WHERE id=$5
 	`
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
@@ -95,7 +88,7 @@ func (event *Event) Update() error {
 
 func (event Event) Delete() error {
 	query := `
-	DELETE FROM events WHERE id=?
+	DELETE FROM events WHERE id=$1
 	`
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
@@ -108,7 +101,7 @@ func (event Event) Delete() error {
 
 func (e Event) Register(userId int64) error {
 	query := `
-	INSERT INTO registrations(event_id, user_id) VALUES (?,?)
+	INSERT INTO registrations(event_id, user_id) VALUES ($1,$2)
 	`
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
@@ -121,7 +114,7 @@ func (e Event) Register(userId int64) error {
 
 func (e Event) CancelRegistration(userId int64) error {
 	query := `
-		DELETE FROM registrations WHERE event_id = ? AND user_id = ?
+		DELETE FROM registrations WHERE event_id = $1 AND user_id = $2
 	`
 	stmt, err := db.DB.Prepare(query)
 

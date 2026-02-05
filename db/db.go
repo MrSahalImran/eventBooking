@@ -2,68 +2,89 @@ package db
 
 import (
 	"database/sql"
+	"log"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 var DB *sql.DB
 
 func InitDB() {
 	var err error
-	DB, err = sql.Open("sqlite3", "api.db")
+
+	dsn := "postgres://postgres:password@localhost:5432/eventdb?sslmode=disable"
+
+	DB, err = sql.Open("pgx", dsn)
 	if err != nil {
-		panic("could not connect to database")
+		log.Fatal("could not connect to database:", err)
 	}
 
+	// Connection pool settings
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
-	createTables()
 
+	// Verify connection
+	if err := DB.Ping(); err != nil {
+		log.Fatal("database not reachable:", err)
+	}
+
+	createTables()
+	log.Println("PostgreSQL connected successfully")
 }
 
 func createTables() {
 	createUsersTable := `
-	CREATE TABLE IF NOT EXISTS users(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	email TEXT NOT NULL UNIQUE,
-	password TEXT NOT NULL
-	)
+	CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		email TEXT NOT NULL UNIQUE,
+		password TEXT NOT NULL
+	);
 	`
+
 	_, err := DB.Exec(createUsersTable)
 	if err != nil {
-		panic("could not create users table")
+		log.Fatal("could not create users table:", err)
 	}
 
 	createEventsTable := `
 	CREATE TABLE IF NOT EXISTS events (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		id SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
 		description TEXT NOT NULL,
-		location TEXT NOT NULL, 
-		dateTime DATETIME NOT NULL, 
+		location TEXT NOT NULL,
+		date_time TIMESTAMP NOT NULL,
 		user_id INTEGER,
-		FOREIGN KEY(user_id) REFERENCES users(id)
-	)`
-
-	_, err = DB.Exec(createEventsTable)
-
-	if err != nil {
-		panic("could not create event table")
-	}
-
-	createRegistrationTable := `
-	CREATE TABLE IF NOT EXISTS registrations(
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
-	event_id INTEGER,
-	user_id INTEGER,
-	FOREIGN KEY(event_id) REFERENCES events(id),
-	FOREIGN KEY(user_id) REFERENCES users(id)
-	)
+		CONSTRAINT fk_user
+			FOREIGN KEY(user_id)
+			REFERENCES users(id)
+			ON DELETE CASCADE
+	);
 	`
 
-	_, err = DB.Exec(createRegistrationTable)
-
+	_, err = DB.Exec(createEventsTable)
 	if err != nil {
-		panic("could not create registration table")
+		log.Fatal("could not create events table:", err)
+	}
+
+	createRegistrationsTable := `
+	CREATE TABLE IF NOT EXISTS registrations (
+		id SERIAL PRIMARY KEY,
+		event_id INTEGER NOT NULL,
+		user_id INTEGER NOT NULL,
+		CONSTRAINT fk_event
+			FOREIGN KEY(event_id)
+			REFERENCES events(id)
+			ON DELETE CASCADE,
+		CONSTRAINT fk_user
+			FOREIGN KEY(user_id)
+			REFERENCES users(id)
+			ON DELETE CASCADE,
+		UNIQUE(event_id, user_id)
+	);
+	`
+
+	_, err = DB.Exec(createRegistrationsTable)
+	if err != nil {
+		log.Fatal("could not create registrations table:", err)
 	}
 }
